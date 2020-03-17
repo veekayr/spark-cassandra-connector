@@ -12,6 +12,7 @@ env:
   global:
     - CCM_CLUSTER_MODE=debug
     - PRESERVE_LOGS=ccm
+    - TEST_PARALLEL_TASKS=4
   jobs:
     - CCM_CASSANDRA_VERSION=3.11.6
 
@@ -19,5 +20,5 @@ install:
   - pip install --user ccm
 
 script:
-  - "sbt ++$TRAVIS_SCALA_VERSION -Dtest.cassandra.version=$CASSANDRA_VERSION -Dtravis=true -Dtravis=true it:test"  #Integration Suite
-  - "sbt ++$TRAVIS_SCALA_VERSION -Dtest.cassandra.version=$CASSANDRA_VERSION -Dtravis=true -Dtravis=true assembly" #Test Suite and Assembly Test
+  - "sbt ++$TRAVIS_SCALA_VERSION -Dtravis=true it:test"  #Integration Suite
+  - "sbt ++$TRAVIS_SCALA_VERSION -Dtravis=true assembly" #Test Suite and Assembly Test
