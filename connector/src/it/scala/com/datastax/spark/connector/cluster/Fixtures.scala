@@ -48,8 +48,6 @@ sealed trait Fixture extends ClusterProvider {
     System.setProperty("ccm.branch", "master")
   }
 
-  sys.env.get("CCM_DIRECTORY").foreach(System.setProperty("ccm.directory", _))
-
   private[cluster] def configs: Seq[CcmConfig]
 
   private[cluster] def connectionParameters(address: InetSocketAddress): Map[String, String]

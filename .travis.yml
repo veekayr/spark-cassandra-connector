@@ -10,7 +10,8 @@ scala:
 
 env:
   global:
-    - CCM_DIRECTORY=/home/travis/.ccm
+    - CCM_CLUSTER_MODE=debug
+    - PRESERVE_LOGS=ccm
   jobs:
     - CCM_CASSANDRA_VERSION=3.11.6
 
