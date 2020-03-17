@@ -8,7 +8,7 @@ dist: trusty
 
 cache:
   directories:
-    - /home/travis/.ccm/
+    -  /home/travis/.ccm/repository
 
 scala:
   - 2.12.10
@@ -17,7 +17,7 @@ env:
   global:
     - CCM_CLUSTER_MODE=debug
     - PRESERVE_LOGS=ccm
-    - TEST_PARALLEL_TASKS=4
+    - TEST_PARALLEL_TASKS=1
   jobs:
     - CCM_CASSANDRA_VERSION=3.11.6
 
