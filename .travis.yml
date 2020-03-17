@@ -9,7 +9,10 @@ scala:
   - 2.12.10
 
 env:
- - CCM_CASSANDRA_VERSION=3.11.6
+  global:
+    - CCM_DIRECTORY=/home/travis/.ccm
+  jobs:
+    - CCM_CASSANDRA_VERSION=3.11.6
 
 install:
   - pip install --user ccm
