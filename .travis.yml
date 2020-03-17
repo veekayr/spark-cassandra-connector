@@ -5,6 +5,11 @@ jdk:
 sudo: required
 
 dist: trusty
+
+cache:
+  directories:
+    - /home/travis/.ccm/
+
 scala:
   - 2.12.10
 
