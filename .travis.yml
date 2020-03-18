@@ -11,20 +11,23 @@ cache:
     -  /home/travis/.ccm/repository
 
 scala:
+  - 2.11.12
   - 2.12.10
 
 env:
   global:
     - CCM_CLUSTER_MODE=debug
     - PRESERVE_LOGS=ccm
-    - TEST_PARALLEL_TASKS=1
   jobs:
     - CCM_CASSANDRA_VERSION=3.11.6
+    - CCM_CASSANDRA_VERSION=3.0.21
+    - CCM_CASSANDRA_VERSION=2.1.21
+    - CCM_CASSANDRA_VERSION=6.0.11 CCM_IS_DSE=true
+    - CCM_CASSANDRA_VERSION=6.7.7  CCM_IS_DSE=true
 
 install:
   - pip install --user ccm
 
 script:
-  - "unset JVM_OPTS"
+  - "unset JVM_OPTS" # The Travis JVM Opts break CCM
   - "sbt ++$TRAVIS_SCALA_VERSION -Dtravis=true it:test"  #Integration Suite
-  - "sbt ++$TRAVIS_SCALA_VERSION -Dtravis=true assembly" #Test Suite and Assembly Test
