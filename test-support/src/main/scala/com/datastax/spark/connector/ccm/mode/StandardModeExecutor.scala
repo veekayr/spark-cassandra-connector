@@ -3,6 +3,7 @@ package com.datastax.spark.connector.ccm.mode
 import java.io.File
 import java.nio.file.{Files, Path, Paths}
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.function.Consumer
 
 import com.datastax.oss.driver.api.core.Version
 import com.datastax.spark.connector.ccm.CcmConfig
@@ -31,7 +32,10 @@ private[mode] trait DefaultExecutor extends ClusterModeExecutor {
       execute( createArgs: _*)
       // Check installed Directory
       println("looking in the bin")
-      Files.walk(dir.resolve("repository").resolve(config.getCassandraVersion.toString).resolve("bin"), 1).forEach(println)
+      Files.walk(dir.resolve("repository").resolve(config.getCassandraVersion.toString).resolve("bin"), 1)
+        .forEach(new Consumer[Path] {
+          override def accept(t: Path): Unit = println(t)
+        })
 
       config.nodes.foreach { i =>
         val addArgs = Seq ("add",
