@@ -3,11 +3,10 @@ package com.datastax.spark.connector.ccm.mode
 import java.io.File
 import java.nio.file.{Files, Path, Paths}
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.logging.Logger
 
 import com.datastax.oss.driver.api.core.Version
 import com.datastax.spark.connector.ccm.CcmConfig
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.JavaConverters._
 
@@ -21,15 +20,17 @@ private[mode] trait DefaultExecutor extends ClusterModeExecutor {
     execute(s"node$nodeNo", "start", formattedJvmArgs + "--wait-for-binary-proto")
   }
 
-  private def eventually[T](timeoutInSeconds: Int = 20, intervalInMs: Int = 500)(f: => T)(hint: String = ""): T = {
+  private def eventually[T](hint: String = "", f: =>T ): T = {
     val start = System.currentTimeMillis()
+    val timeoutInSeconds = 20
+    val intervalInMs = 500
     val end = start + timeoutInSeconds * 1000
 
     while ( System.currentTimeMillis() < end) {
       try {
         return f
       } catch { case e: Throwable =>
-        logger.warning(s"Tried to execute code, will retry : ${e.getMessage}")
+        logger.warn(s"Tried to execute code, will retry : ${e.getMessage}")
         Thread.sleep(intervalInMs)
       }
     }
@@ -57,16 +58,16 @@ private[mode] trait DefaultExecutor extends ClusterModeExecutor {
       if (Files.exists(repositoryDir)) {
         logger.info(s"Found cached repository dir: $repositoryDir")
         logger.info("Checking for appropriate bin dir")
-        eventually()(Files.exists(repositoryDir.resolve("bin")))
+        eventually(f = Files.exists(repositoryDir.resolve("bin")))
         Files.walk(repositoryDir.resolve("bin")).iterator().asScala.foreach(println)
       }
 
       execute( createArgs: _*)
 
-      eventually(){
+      eventually("Checking to make sure repository was correctly expanded", {
         Files.walk(repositoryDir, 1).iterator().asScala.foreach(println)
         Files.exists(repositoryDir.resolve("bin"))
-      }("Checking to make sure repository was correctly expanded")
+      })
 
       config.nodes.foreach { i =>
         val addArgs = Seq ("add",
