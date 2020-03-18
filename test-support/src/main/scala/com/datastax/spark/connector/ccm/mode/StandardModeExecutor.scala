@@ -59,13 +59,11 @@ private[mode] trait DefaultExecutor extends ClusterModeExecutor {
         logger.info(s"Found cached repository dir: $repositoryDir")
         logger.info("Checking for appropriate bin dir")
         eventually(f = Files.exists(repositoryDir.resolve("bin")))
-        Files.walk(repositoryDir.resolve("bin")).iterator().asScala.foreach(println)
       }
 
       execute( createArgs: _*)
 
       eventually("Checking to make sure repository was correctly expanded", {
-        Files.walk(repositoryDir, 1).iterator().asScala.foreach(println)
         Files.exists(repositoryDir.resolve("bin"))
       })
 
