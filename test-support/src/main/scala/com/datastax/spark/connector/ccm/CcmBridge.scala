@@ -72,7 +72,7 @@ object CcmBridge {
   private val logger: Logger = LoggerFactory.getLogger(classOf[CcmBridge])
 
   def execute(cli: CommandLine): Seq[String] = {
-    logger.debug("Executing: " + cli)
+    logger.info("Executing: " + cli)
 
     val watchDog: ExecuteWatchdog = new ExecuteWatchdog(TimeUnit.MINUTES.toMillis(10))
 
@@ -92,7 +92,7 @@ object CcmBridge {
       val streamHandler = new PumpStreamHandler(outStream, errStream)
       executor.setStreamHandler(streamHandler)
       executor.setWatchdog(watchDog)
-      val retValue = executor.execute(cli, travisCompatibleEnv)
+      val retValue = executor.execute(cli)
       if (retValue != 0) {
         logger.error(
           "Non-zero exit code ({}) returned from executing ccm command: {}", retValue, cli)
@@ -106,19 +106,6 @@ object CcmBridge {
     } finally {
       Try(outStream.close())
       Try(errStream.close())
-    }
-  }
-
-  /**
-    * Travis sets JVM_OPTS to a file reference which CCM does not understand, we need to remove this
-    * if in the future we need custom JVM options that aren't set by CCM we need to modify them here.
-    */
-  def travisCompatibleEnv = {
-    import scala.collection.JavaConverters._
-    if (sys.props.get("travis").isDefined) {
-      (sys.env - "JVM_OPTS").asJava
-    } else {
-      sys.env.asJava
     }
   }
 }
