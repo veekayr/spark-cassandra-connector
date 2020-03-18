@@ -1,7 +1,7 @@
 package com.datastax.spark.connector.ccm.mode
 
 import java.io.File
-import java.nio.file.{Files, Path}
+import java.nio.file.{Files, Path, Paths}
 import java.util.concurrent.atomic.AtomicBoolean
 
 import com.datastax.oss.driver.api.core.Version
@@ -29,6 +29,9 @@ private[mode] trait DefaultExecutor extends ClusterModeExecutor {
       val createArgs = Seq("create", clusterName, "-i", config.ipPrefix, (options ++ dseFlag).mkString(" "))
 
       execute( createArgs: _*)
+      // Check installed Directory
+      println("looking in the bin")
+      Files.walk(dir.resolve("repository").resolve(config.getCassandraVersion.toString).resolve("bin"), 1).forEach(println)
 
       config.nodes.foreach { i =>
         val addArgs = Seq ("add",
