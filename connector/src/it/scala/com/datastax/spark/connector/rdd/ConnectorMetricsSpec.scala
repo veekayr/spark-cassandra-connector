@@ -25,7 +25,7 @@ class ConnectorMetricsSpec extends SparkCassandraITFlatSpecBase with DefaultClus
     super.defaultConf
       .clone()
       .set("spark.extraListeners", classOf[ConnectorMetricsListener].getName)
-      .setMaster("local[16]")
+      .setMaster("local")
       .setAppName(getClass.getSimpleName)
   )
 
