@@ -78,10 +78,7 @@ class CassandraTableScanRDDSpec extends SparkCassandraITFlatSpecBase with Defaul
   override def beforeClass {
     conn.withSessionDo { session =>
 
-      val profile = session.getContext.getConfig.getDefaultProfile
-      val maxConcurrent = profile.getInt(DefaultDriverOption.CONNECTION_POOL_LOCAL_SIZE) * profile.getInt(DefaultDriverOption.CONNECTION_MAX_REQUESTS)
-      val executor = new AsyncExecutor[BoundStatement, AsyncResultSet](
-        stmt => session.executeAsync(stmt.setIdempotent(true)), maxConcurrent, None, None)
+      val executor = getExecutor(session)
 
       session.execute(s"CREATE KEYSPACE IF NOT EXISTS $ks " +
         s"WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 1 }")
